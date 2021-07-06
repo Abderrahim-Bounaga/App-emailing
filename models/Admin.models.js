@@ -27,12 +27,32 @@ const user = new mongoose.Schema({
     role:{
         type: String,
         enum: [{
-            name : "admin",
-            pirmissions:true
-         },
-        {
-            name : "user"
-        }
+                name : "admin",
+                permissions: [
+                    {
+                        model : "users",
+                        access:{
+                            create : true,
+                            read : true,
+                            update : true,
+                            delete : true
+                        }
+                    },
+                    {
+                        model : "groups",
+                        access:{
+                            create : true,
+                            read : true,
+                            update : true,
+                            delete : true
+                        }
+                    }
+                ]
+            
+            },
+            {
+                name : "user"
+            }
         ],
         default: 'user'
     },
