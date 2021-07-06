@@ -35,7 +35,7 @@ exports.SendMail_Client =async (req,res)=>{
   ///get service ///
   const service = await Options.find()
   
-  const {subject,text, pass, users, servicee}= req.body
+  const {subject, text, pass, users, servicee}= req.body
   const Email= req.params.Email
   const user = User.findOne({Email: Email})
 
