@@ -10,7 +10,7 @@ const verifyIsAuth = (req, res , next) => {
             if(err){
                return res.status(400).json({isAuth:false,role:''})
             }else{
-                console.log(decodedToken.id);
+                // console.log(decodedToken.id);
                               
                 next()
             }
@@ -20,33 +20,33 @@ const verifyIsAuth = (req, res , next) => {
         res.json({isAuth:false,role:''})
     }
 }
-
 const isAdmin = (req, res, next) => {
     res.role = 'admin'
+
     next()
 }
-
-
 const isUser = (req, res, next) => {
     res.role = 'user'
     next()
 }
 
-// const isAuth = (req, res, next) => {
-//     const token = req.cookies.jwt_token
-//     if(token){
-//         jwt.verify(token, process.env.SECRET_TOKEN, (err, decodedToken) =>{
-//             if(!err && decodedToken.role === res.role){
-//              res.status(200).json({isAuth:true,role: res.role})
-              
-//             }else{
-//                return res.status(400).clearcookie('jwt_token').json({isAuth:false,role:''})
-//             }
-//         })
-//     }else{
-//        return res.status(400).json({isAuth:false,role:''})
-//     }
-// }
+const isAuth = (req, res, next) => {
+    const auth_header = req.headers.jwt_token;
+    let token = auth_header;
+
+    if(token){
+        jwt.verify(token, process.env.SECRET_TOKEN, (err, decodedToken) =>{
+            if(!err && decodedToken.role === res.role){
+             
+             next()
+            }else{
+               return res.status(400).clearcookie('jwt_token').json({isAuth:false,role:''})
+            }
+        })
+    }else{
+       return res.status(400).json({isAuth:false,role:''})
+    }
+}
 // const isAuthenti = (role) => (req, res, next) => {
 //     const token = req.cookie.jwt_token
 //     if(token){
@@ -99,4 +99,4 @@ const isUser = (req, res, next) => {
 //     }
 // }
 
-module.exports = {verifyIsAuth, isAdmin, isUser}
+module.exports = {verifyIsAuth, isAdmin, isUser, isAuth}

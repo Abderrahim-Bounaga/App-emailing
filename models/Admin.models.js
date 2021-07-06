@@ -28,27 +28,6 @@ const user = new mongoose.Schema({
         type: String,
         enum: [{
                 name : "admin",
-                permissions: [
-                    {
-                        model : "users",
-                        access:{
-                            create : true,
-                            read : true,
-                            update : true,
-                            delete : true
-                        }
-                    },
-                    {
-                        model : "groups",
-                        access:{
-                            create : true,
-                            read : true,
-                            update : true,
-                            delete : true
-                        }
-                    }
-                ]
-            
             },
             {
                 name : "user"
