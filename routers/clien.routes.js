@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const {addClient,getClient,SendMail_Client} = require('../components/Client')
+const {addClient, getClient, getOneClient, SendMail_Client} = require('../components/Client')
 
-router.post('/Client',addClient)
-router.get('/list-Client',getClient)
-router.get('/SendMail_Client/:Email',SendMail_Client)
+router.post('/create',addClient)
+router.get('/clients',getClient)
+router.get('/info',getOneClient)
+router.get('/SendMail_Client',SendMail_Client)
 
 module.exports = router

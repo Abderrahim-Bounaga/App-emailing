@@ -3,14 +3,15 @@ const User = require('../models/Admin.models')
 
 const verifyIsAuth = (req, res , next) => {
     const auth_header = req.headers.jwt_token;
-    console.log(auth_header)
+    // console.log(auth_header)
     let token = auth_header;
     if(token){
         jwt.verify(token, process.env.SECRET_TOKEN, (err, decodedToken) => {
             if(err){
                return res.status(400).json({isAuth:false,role:''})
             }else{
-                const user = User.findOne(decodedToken.id)
+                console.log(decodedToken.id);
+                              
                 next()
             }
         })
@@ -19,6 +20,7 @@ const verifyIsAuth = (req, res , next) => {
         res.json({isAuth:false,role:''})
     }
 }
+
 const isAdmin = (req, res, next) => {
     res.role = 'admin'
     next()

@@ -2,6 +2,7 @@ const Group = require('../models/Group.models')
 const Client = require('../models/Client.models');
 const Fawn = require('fawn');
 const nodemailer = require("nodemailer");
+const  Options = require('../models/Option.models')
 
 
 exports.addGroup = async(req,res)=>{

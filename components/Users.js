@@ -43,6 +43,10 @@ exports.signUpUser = async (req, res) => {
         res.status(500).json(error)
     }
 };
+
+
+////logIn/////
+
 exports.signInUser = async (req, res) => {
     // generate error
     const {error} = signInValidation(req.body) 
@@ -72,6 +76,9 @@ exports.signInUser = async (req, res) => {
         res.status(500).json(error)
     }
 }
+
+//// All Users ////
+
 exports.getallUser = async (req, res) => {
     try {
        const allUser = await User.find().populate('departement_id', 'name -_id')
@@ -80,6 +87,94 @@ exports.getallUser = async (req, res) => {
         res.status(500).json(error)
     }
 }
+
+
+//// User Info ////
+
+exports.getUser = async (req, res)=>{
+    const auth_header = req.headers.jwt_token;
+    // console.log(auth_header)
+    let token = auth_header;
+    try {
+    if(token){
+        jwt.verify(token, process.env.SECRET_TOKEN, async(err, decodedToken) => {
+            if(err){
+               return res.status(400).json({isAuth:false,role:''})
+            }else{
+                const users = await User.findById({_id: decodedToken.id});
+                res.status(200).json(users)
+            }
+        })
+    }
+    else{
+        res.json({isAuth:false,role:''})
+    }
+    
+        
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
+
+
+//// delet user ////
+
+
+exports.deleteUser = async (req,res) =>{
+    await User.findByIdAndRemove(req.params.id, function(err){
+        if (err) {
+            return res.status(404).send({ message: 'Cannot delete the user' });
+        }
+        res.status(201).send('User removed');
+    });
+};
+
+//// update Password /////
+
+exports.updatePassword = async (req,res) => {
+    //Get user infos
+    const {password} = req.body;
+    //check password
+    if(!password) {
+        return res.status(400).json({message: 'Password is empty'});
+    }
+
+    //Save updated user
+    //Look for a user in the database
+    const userToUpdate = await User.findOne({_id: req.params.id});
+    
+    //if user doesn't exit
+    if (!userToUpdate){
+        return res.status(404).json({ message: 'This user does not exist' });
+    }
+
+    //Check if the new password is not different from the old one
+    const validPassword = await bcrypt.compare(password,userToUpdate.password);
+    if(validPassword) {
+        return res.status(404).json({ message: 'New and old password must be differents' });
+    }
+
+    //Define fields to update
+    userToUpdate.password = password;
+
+    //Update the user
+    const updatedUser = await userToUpdate.save();
+    if (!updatedUser) {
+        return res.status(404).json({ message: 'Cannot update user' });
+    }
+    res.status(201).json({ user: updatedUser._id, newState: 'enabled', password: 'updated', type: updatedUser.type });
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
